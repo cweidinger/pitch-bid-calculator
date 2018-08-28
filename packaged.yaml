@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'bid-calculator
+
+  Sample SAM Template for bid-calculator
+
+  '
+Globals:
+  Api:
+    Cors: '''www.clayweidinger.com'''
+    EndpointConfiguration: REGIONAL
+  Function:
+    Timeout: 200
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Pitch Bid function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/pitch-bid/
+  HelloWorldFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - PitchBidCalculatorFunction
+      - Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - PitchBidCalculatorFunctionRole
+      - Arn
+Resources:
+  PitchBidCalculatorFunction:
+    Properties:
+      CodeUri: s3://clayweidinger-lambda-code/b1674b887998b1c40e5da7d4cdb37057
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Properties:
+            Method: get
+            Path: /pitch-bid
+          Type: Api
+      Handler: pitch.bid.PitchBidCalculatorFuntion::handleRequest
+      MemorySize: 128
+      Runtime: java8
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
