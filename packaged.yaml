@@ -1,15 +1,35 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
 Description: 'bid-calculator
 
   Sample SAM Template for bid-calculator
 
   '
 Globals:
-  Api:
-    Cors: '''www.clayweidinger.com'''
-    EndpointConfiguration: REGIONAL
   Function:
     Timeout: 200
+  Api:
+    EndpointConfiguration: REGIONAL
+    Cors: '''www.clayweidinger.com'''
+Resources:
+  PitchBidCalculatorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://clayweidinger-lambda-code/144054d39d24138ec0ff1fb7cf6cf4aa
+      Handler: pitch.bid.PitchBidCalculatorFuntion::handleRequest
+      Runtime: java8
+      MemorySize: 128
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /pitch-bid
+            Method: get
+    Metadata:
+      SamResourceId: PitchBidCalculatorFunction
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Pitch Bid function
@@ -27,21 +47,3 @@ Outputs:
       Fn::GetAtt:
       - PitchBidCalculatorFunctionRole
       - Arn
-Resources:
-  PitchBidCalculatorFunction:
-    Properties:
-      CodeUri: s3://clayweidinger-lambda-code/b1674b887998b1c40e5da7d4cdb37057
-      Environment:
-        Variables:
-          PARAM1: VALUE
-      Events:
-        HelloWorld:
-          Properties:
-            Method: get
-            Path: /pitch-bid
-          Type: Api
-      Handler: pitch.bid.PitchBidCalculatorFuntion::handleRequest
-      MemorySize: 128
-      Runtime: java8
-    Type: AWS::Serverless::Function
-Transform: AWS::Serverless-2016-10-31
